@@ -10,6 +10,9 @@ granie w grę przeciwko komputerowi. Przeciwnik
 import pygame
 from pygame.locals import *
 
+import game_rules
+import minimax
+
 # ustawienie zmiennych gry
 pygame.init()
 
@@ -33,83 +36,8 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Tic tac toe game')
 
 
-# sprawdzenie remisu
-def is_tie(board_game):
-    for row in board_game:
-        for i in row:
-            if i == 0:
-                return False
-    return True
-
-
-# sprawdzenie warunków zwycięstwa
-def check_winner(board_game):
-    # wiersze i kolumny
-    y_pos = 0
-    for x in board_game:
-        # dla X
-        if sum(x) == 3 or (board_game[0][y_pos] + board_game[1][y_pos]
-                           + board_game[2][y_pos] == 3):
-            return 1
-        # dla O
-        if sum(x) == -3 or (board_game[0][y_pos] + board_game[1][y_pos]
-                            + board_game[2][y_pos] == -3):
-            return -1
-        y_pos += 1
-
-    # przekątne
-    # dla X
-    if board_game[0][0] + board_game[1][1] + board_game[2][2] == 3 or \
-            board_game[2][0] + board_game[1][1] + board_game[0][2] == 3:
-        return 1
-
-    # dla O
-    if board_game[0][0] + board_game[1][1] + board_game[2][2] == -3 or \
-            board_game[2][0] + board_game[1][1] + board_game[0][2] == -3:
-        return -1
-
-    return 0
-
-
-# algorytm minimax
-def minimax(depth, is_max):
-    global board
-    win = check_winner(board)
-
-    if win == 1:
-        return -10
-
-    if win == -1:
-        return 10
-
-    if is_tie(board) or depth == 0:
-        return 0
-
-    # maksymalizowanie wyniku
-    if is_max:
-        best = 1000
-        for i in range(3):
-            for j in range(3):
-                if board[i][j] == 0:
-                    board[i][j] = 1
-                    best = min(best, minimax(depth - 1, not is_max))
-                    board[i][j] = 0
-        return best - depth
-
-    # minimalizowanie wyniku
-    else:
-        best = -1000
-        for i in range(3):
-            for j in range(3):
-                if board[i][j] == 0:
-                    board[i][j] = -1
-                    best = max(best, minimax(depth - 1, not is_max))
-                    board[i][j] = 0
-        return best + depth
-
-
 # ruch przeciwnika komputerowego
-def ai_move():
+def make_best_move_enemy():
     global player
     global board
 
@@ -122,7 +50,7 @@ def ai_move():
             if board[i][j] == 0:
 
                 board[i][j] = -1
-                move_val = minimax(5, True)
+                move_val = minimax.minimax(5, True, board)
                 board[i][j] = 0
 
                 if move_val > best_val:
@@ -156,16 +84,6 @@ def player_events(e):
             if board[cell_y // 200][cell_x // 200] == 0:
                 board[cell_y // 200][cell_x // 200] = player
                 player *= -1
-
-                winner = check_winner(board)
-                if winner != 0:
-                    game_over = True
-                    player = 1
-
-                if not game_over and is_tie(board):
-                    game_over = True
-                    winner = 0
-                    player = 1
 
 
 # rysowanie planszy
@@ -257,15 +175,18 @@ while run:
             player_events(event)
     # ruch przeciwnika
     else:
-        ai_move()
-        winner = check_winner(board)
-        if winner != 0:
-            game_over = True
-            player = 1
+        make_best_move_enemy()
 
-        if not game_over and is_tie(board):
-            game_over = True
-            winner = 0
+    # sprawdzenie warunków zwycięstwa
+    winner = game_rules.check_winner(board)
+    if winner != 0:
+        game_over = True
+        player = 1
+
+    if not game_over and game_rules.is_tie(board):
+        game_over = True
+        winner = 0
+        player = 1
 
     if game_over:
         show_game_over_screen()
