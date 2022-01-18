@@ -2,9 +2,7 @@
 Tytuł: Kółko i krzyżyk (Tic tac toe)
 Autor: Bartosz Średziński
 Opis: Gra kółko i krzyżyk, napisana z biblioteką pygame. Umożliwia
-granie w grę przeciwko komputerowi. Przeciwnik
-  komputerowy
-
+granie w grę przeciwko komputerowi. Przeciwnik komputerowy używa algorytmu min max.
 """
 
 import pygame
