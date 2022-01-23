@@ -14,11 +14,12 @@ import minimax
 # ustawienie zmiennych gry
 pygame.init()
 
-board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+board_tictactoe = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-player = 1
+player_current = 1
 winner = 0
 clicked = False
+clicked_new_game = 0
 game_over = False
 
 run = True
@@ -34,10 +35,20 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Tic tac toe game')
 
 
-# ruch przeciwnika komputerowego
-def make_best_move_enemy():
-    global player
-    global board
+def make_best_move_enemy(player, board):
+    """
+    OPIS
+        Funkcja wykonuje ruch gracza komputerowego. Wykonuje wszystkie możliwe ruchy i oblicza dla nich wartości poprzez
+        algorytm minmax. Na koniec wybiera najlepszy ruch i go wykonuje.
+
+    PARAMETRY:
+        board - plansza gry
+        player - zmienna odpowiedzialna za kolejność graczy
+
+    ZWRACA:
+        player - aktualny stan
+        board - stan po ruchu komputera
+    """
 
     best_val = -1000
     best_pos = (-1, -1)
@@ -57,35 +68,14 @@ def make_best_move_enemy():
 
     board[best_pos[0]][best_pos[1]] = player
     player *= -1
+    return player, board
 
 
-# obsługa zdarzeń gracza
-def player_events(e):
-    global run
-    global clicked
-    global player
-    global winner
-    global game_over
-    global board
-
-    if e.type == pygame.QUIT:
-        run = False
-    if game_over == 0:
-        if e.type == pygame.MOUSEBUTTONDOWN and not clicked:
-            clicked = True
-
-        if e.type == pygame.MOUSEBUTTONUP and clicked:
-            clicked = False
-            pos = pygame.mouse.get_pos()
-            cell_x = pos[0]
-            cell_y = pos[1]
-            if board[cell_y // 200][cell_x // 200] == 0:
-                board[cell_y // 200][cell_x // 200] = player
-                player *= -1
-
-
-# rysowanie planszy
 def draw_grid():
+    """
+    OPIS
+        Funkcja rysuje na ekranie plansze gry
+    """
     bg_color = (255, 255, 200)
     grid_color = (50, 50, 50)
     screen.fill(bg_color)
@@ -96,8 +86,14 @@ def draw_grid():
                                                             screen_height), line_width)
 
 
-# rysowanie X i O
-def draw_markers():
+def draw_markers(board):
+    """
+    OPIS
+        Funkcja rysuje na ekranie X i O
+
+    PARAMETRY:
+        board - plansza gry
+    """
     x_pos = 0
     for x in board:
         y_pos = 0
@@ -120,6 +116,10 @@ def draw_markers():
 
 # Wyświetlenie komunikatu o wygranej
 def draw_winner():
+    """
+    OPIS
+        Funkcja wyświetla komunikat o zakończeniu gry(wygrana, remis) oraz komunikat "zagraj ponownie".
+    """
     if winner != 0:
         end_text = "Gracz " + str(winner) + " wygrał!"
     else:
@@ -129,65 +129,87 @@ def draw_winner():
                                   60).render(end_text, True, (0, 0, 255))
     pygame.draw.rect(screen, (0, 255, 0), (screen_width // 2 - 145,
                                            screen_height // 2 - 30, 320, 60))
-    screen.blit(end_img, (screen_width // 2 - 140, screen_height // 2 -
-                          20))
+    screen.blit(end_img, (screen_width // 2 - 140, screen_height // 2 - 20))
 
     again_text = 'Zagraj ponownie'
     again_img = pygame.font.SysFont(pygame.font.get_default_font(),
                                     60).render(again_text, True, (0, 0, 255))
     pygame.draw.rect(screen, (0, 255, 0), again_rect)
-    screen.blit(again_img, (screen_width // 2 - 150, screen_height // 2
-                            + 40))
+    screen.blit(again_img, (screen_width // 2 - 150, screen_height // 2 + 40))
 
 
-# obsługa komunikatu po zakończniu gry
-def show_game_over_screen():
-    global clicked
-    global board
-    global winner
-    global player
-    global game_over
+def show_game_over_screen(clicked_new_game):
+    """
+    OPIS
+        Funkcja wyświetla komunikat o zakończeniu gry i umożliwia zagranie od nowa
+
+    PARAMETRY:
+        clicked_new_game - stan wciśnięcia myszy
+
+    ZWRACA:
+        0 - przycisk nie wciśnięty
+        1 - przycisk wciśnięty
+        2 - klinięto w "zagraj ponownie"
+    """
 
     draw_winner()
-    if event.type == pygame.MOUSEBUTTONDOWN and not clicked:
-        clicked = True
-    if event.type == pygame.MOUSEBUTTONUP and clicked:
-        clicked = False
+    if event.type == pygame.MOUSEBUTTONDOWN and not clicked_new_game:
+        return 1
+    if event.type == pygame.MOUSEBUTTONUP and clicked_new_game:
         pos = pygame.mouse.get_pos()
         if again_rect.collidepoint(pos):
-            board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-            winner = 0
-            player = 1
-            game_over = False
+            return 2
+        return 0
 
 
 # główna pętla gry
 while run:
     # rysowanie planszy
     draw_grid()
-    draw_markers()
+    draw_markers(board_tictactoe)
 
     # ruch gracza
-    if player == 1:
+    if player_current == 1:
         for event in pygame.event.get():
-            player_events(event)
+            if event.type == pygame.QUIT:
+                run = False
+            if game_over == 0:
+                if event.type == pygame.MOUSEBUTTONDOWN and not clicked:
+                    clicked = True
+
+                if event.type == pygame.MOUSEBUTTONUP and clicked:
+                    clicked = False
+                    pos = pygame.mouse.get_pos()
+                    cell_x = pos[0]
+                    cell_y = pos[1]
+                    if board_tictactoe[cell_y // 200][cell_x // 200] == 0:
+                        board_tictactoe[cell_y // 200][cell_x // 200] = player_current
+                        player_current *= -1
+
     # ruch przeciwnika
     else:
-        make_best_move_enemy()
+        player_current, board_tictactoe = make_best_move_enemy(player_current, board_tictactoe)
 
     # sprawdzenie warunków zwycięstwa
-    winner = game_rules.check_winner(board)
+    winner = game_rules.check_winner(board_tictactoe)
     if winner != 0:
         game_over = True
-        player = 1
+        player_current = 1
 
-    if not game_over and game_rules.is_tie(board):
+    if not game_over and game_rules.is_tie(board_tictactoe):
         game_over = True
         winner = 0
-        player = 1
+        player_current = 1
 
     if game_over:
-        show_game_over_screen()
+        clicked_new_game = show_game_over_screen(clicked_new_game)
+        if clicked_new_game == 2:
+            board_tictactoe = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+            winner = 0
+            player_current = 1
+            game_over = False
+            clicked_new_game = 0
+
     pygame.display.update()
 
 pygame.quit()

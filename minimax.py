@@ -3,6 +3,18 @@ import game_rules
 
 # algorytm minimax
 def minimax(depth, is_max, board):
+    """
+    OPIS
+        Implementacja algorytmu min-max
+
+    PARAMETRY:
+        board - plansza gry
+        is_max - maksymalizacja czy minimalizacja
+        depth - głębokość drzewa
+
+    ZWRACA:
+        wartość gałęzi
+    """
     win = game_rules.check_winner(board)
 
     if win == 1:
