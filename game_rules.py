@@ -59,7 +59,7 @@ def check_diagonal(player, board):
     return False
 
 
-def check_winner(board_game):
+def check_winner(board):
     """
     OPIS:
         Funkcja sprawdza warunki zwycięstwa dla gry kółko i krzyżyk
@@ -73,10 +73,10 @@ def check_winner(board_game):
         0 jeżeli nie ma wygranej
     """
 
-    if check_rows_cols(-1) or check_diagonal(-1):
+    if check_rows_cols(-1, board) or check_diagonal(-1, board):
         return -1
 
-    if check_rows_cols(1) or check_diagonal(1):
+    if check_rows_cols(1, board) or check_diagonal(1, board):
         return 1
 
     return 0

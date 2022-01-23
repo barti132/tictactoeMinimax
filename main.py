@@ -128,7 +128,7 @@ def draw_winner():
     end_img = pygame.font.SysFont(pygame.font.get_default_font(),
                                   60).render(end_text, True, (0, 0, 255))
     pygame.draw.rect(screen, (0, 255, 0), (screen_width // 2 - 145,
-                                           screen_height // 2 - 30, 320, 60))
+                                           screen_height // 2 - 30, 330, 60))
     screen.blit(end_img, (screen_width // 2 - 140, screen_height // 2 - 20))
 
     again_text = 'Zagraj ponownie'
