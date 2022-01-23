@@ -1,6 +1,6 @@
 def is_tie(board_game):
     """
-    OPIS
+    OPIS:
         Funkcja sprawdza warunki remisu dla gry kółko i krzyżyk
 
     PARAMETRY:
@@ -20,7 +20,7 @@ def is_tie(board_game):
 
 def check_winner(board_game):
     """
-    OPIS
+    OPIS:
         Funkcja sprawdza warunki zwycięstwa dla gry kółko i krzyżyk
 
     PARAMETRY:

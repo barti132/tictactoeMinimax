@@ -4,7 +4,7 @@ import game_rules
 # algorytm minimax
 def minimax(depth, is_max, board):
     """
-    OPIS
+    OPIS:
         Implementacja algorytmu min-max
 
     PARAMETRY:

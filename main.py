@@ -37,7 +37,7 @@ pygame.display.set_caption('Tic tac toe game')
 
 def make_best_move_enemy(player, board):
     """
-    OPIS
+    OPIS:
         Funkcja wykonuje ruch gracza komputerowego. Wykonuje wszystkie możliwe ruchy i oblicza dla nich wartości poprzez
         algorytm minmax. Na koniec wybiera najlepszy ruch i go wykonuje.
 
@@ -73,7 +73,7 @@ def make_best_move_enemy(player, board):
 
 def draw_grid():
     """
-    OPIS
+    OPIS:
         Funkcja rysuje na ekranie plansze gry
     """
     bg_color = (255, 255, 200)
@@ -88,7 +88,7 @@ def draw_grid():
 
 def draw_markers(board):
     """
-    OPIS
+    OPIS:
         Funkcja rysuje na ekranie X i O
 
     PARAMETRY:
@@ -117,7 +117,7 @@ def draw_markers(board):
 # Wyświetlenie komunikatu o wygranej
 def draw_winner():
     """
-    OPIS
+    OPIS:
         Funkcja wyświetla komunikat o zakończeniu gry(wygrana, remis) oraz komunikat "zagraj ponownie".
     """
     if winner != 0:
@@ -140,11 +140,11 @@ def draw_winner():
 
 def show_game_over_screen(clicked_new_game):
     """
-    OPIS
+    OPIS:
         Funkcja wyświetla komunikat o zakończeniu gry i umożliwia zagranie od nowa
 
     PARAMETRY:
-        clicked_new_game - stan wciśnięcia myszy
+        clicked_new_game - stan myszy
 
     ZWRACA:
         0 - przycisk nie wciśnięty
