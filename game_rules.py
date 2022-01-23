@@ -18,6 +18,47 @@ def is_tie(board_game):
     return True
 
 
+def check_rows_cols(player, board):
+    """
+    OPIS:
+        Funckja sprawdza zwycięstwa dla podanego gracza w wierszach i kolumnach
+
+    PARAMETRY:
+        player - dla jakiego gracza sprawdzamy warunki
+        board - plansza gry
+
+    ZWRACA:
+        True jeżeli gracz wygrał
+        False jeżeli warunek zwycięstwa nie jest spełniony
+    """
+    y = 0
+    for x in board:
+        if sum(x) == 3 * player or (board[0][y] + board[1][y] + board[2][y] == 3 * player):
+            return True
+        y += 1
+    return False
+
+
+def check_diagonal(player, board):
+    """
+    OPIS:
+        Funckja sprawdza zwycięstwa dla podanego gracza w przekątnych
+
+    PARAMETRY:
+        player - dla jakiego gracza sprawdzamy warunki
+        board - plansza gry
+
+    ZWRACA:
+        True jeżeli gracz wygrał
+        False jeżeli warunek zwycięstwa nie jest spełniony
+    """
+
+    if board[0][0] + board[1][1] + board[2][2] == 3 * player or \
+            board[2][0] + board[1][1] + board[0][2] == 3 * player:
+        return True
+    return False
+
+
 def check_winner(board_game):
     """
     OPIS:
@@ -31,28 +72,11 @@ def check_winner(board_game):
         -1 jeżeli wygral gracz O,
         0 jeżeli nie ma wygranej
     """
-    # wiersze i kolumny
-    y_pos = 0
-    for x in board_game:
-        # dla X
-        if sum(x) == 3 or (board_game[0][y_pos] + board_game[1][y_pos]
-                           + board_game[2][y_pos] == 3):
-            return 1
-        # dla O
-        if sum(x) == -3 or (board_game[0][y_pos] + board_game[1][y_pos]
-                            + board_game[2][y_pos] == -3):
-            return -1
-        y_pos += 1
 
-    # przekątne
-    # dla X
-    if board_game[0][0] + board_game[1][1] + board_game[2][2] == 3 or \
-            board_game[2][0] + board_game[1][1] + board_game[0][2] == 3:
-        return 1
-
-    # dla O
-    if board_game[0][0] + board_game[1][1] + board_game[2][2] == -3 or \
-            board_game[2][0] + board_game[1][1] + board_game[0][2] == -3:
+    if check_rows_cols(-1) or check_diagonal(-1):
         return -1
+
+    if check_rows_cols(1) or check_diagonal(1):
+        return 1
 
     return 0

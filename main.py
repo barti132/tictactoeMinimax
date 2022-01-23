@@ -156,8 +156,7 @@ def show_game_over_screen(clicked_new_game):
     if event.type == pygame.MOUSEBUTTONDOWN and not clicked_new_game:
         return 1
     if event.type == pygame.MOUSEBUTTONUP and clicked_new_game:
-        pos = pygame.mouse.get_pos()
-        if again_rect.collidepoint(pos):
+        if again_rect.collidepoint(pygame.mouse.get_pos()):
             return 2
         return 0
 
